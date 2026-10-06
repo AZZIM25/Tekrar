@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Təkrar — Second-hand marketplace</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FBF7F0;--card:#fff;--ink:#1B2B27;--mute:#6B7A75;--brand:#0F5C4D;--accent:#FF6B3D;--line:#E6DFD2;--ft:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101a17;--card:#17251f;--ink:#F2EEE6;--mute:#9DB0A8;--brand:#3CB89C;--line:#26382f}}
+:root[data-theme="dark"]{--bg:#101a17;--card:#17251f;--ink:#F2EEE6;--mute:#9DB0A8;--brand:#3CB89C;--line:#26382f}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ft)}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--brand);color:#fff;display:flex;gap:10px;align-items:center;padding:10px 14px;flex-wrap:wrap}
+.logo{font-weight:800;font-size:22px;letter-spacing:-.5px}.logo b{color:var(--accent)}
+.search{flex:1;min-width:160px;padding:10px 14px;border-radius:10px;border:0;font:inherit;background:#fff;color:#1B2B27}
+button,select{font:inherit;cursor:pointer}
+.btn{background:var(--accent);color:#fff;border:0;border-radius:10px;padding:10px 14px;font-weight:800}
+.ghost{background:rgba(255,255,255,.15);color:#fff;border:0;border-radius:10px;padding:10px 12px;font-weight:600}
+select.ghost option{color:#000}
+.hero{padding:28px 16px 8px;max-width:1100px;margin:auto}.hero h1{margin:0 0 6px;font-size:clamp(24px,5vw,38px);font-weight:800;line-height:1.1}.hero p{margin:0;color:var(--mute)}
+.bar{max-width:1100px;margin:14px auto;padding:0 16px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:8px 14px;font-weight:600}
+.chip.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.bar select{margin-left:auto;padding:8px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.grid{max-width:1100px;margin:auto;padding:0 16px 40px;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden;position:relative;cursor:pointer}
+.ph{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:64px}.ph img{width:100%;height:100%;object-fit:cover}
+.info{padding:10px 12px}.info h3{margin:0 0 4px;font-size:14px;font-weight:600}.price{font-weight:800;color:var(--brand);font-size:17px}
+.badge{position:absolute;top:8px;left:8px;background:var(--accent);color:#fff;font-size:11px;font-weight:800;padding:3px 8px;border-radius:99px}
+.fav{position:absolute;top:6px;right:6px;border:0;background:rgba(255,255,255,.9);border-radius:50%;width:32px;height:32px;font-size:16px}
+dialog{border:0;border-radius:16px;padding:18px;max-width:440px;width:92%;background:var(--card);color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+label{display:block;font-weight:600;font-size:13px;margin:10px 0 4px}
+input,textarea,.f select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+.thumbs{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}.thumbs img{width:56px;height:56px;object-fit:cover;border-radius:8px}
+.row{display:flex;gap:8px;margin-top:14px}.row .btn{flex:1}.sec{background:var(--line);color:var(--ink)}
+.ci{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}.ci .ph{width:48px;font-size:28px;aspect-ratio:1}
+.ci div:nth-child(2){flex:1;font-size:14px}
+footer{text-align:center;color:var(--mute);font-size:13px;padding:24px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Tək<b>rar</b></div>
+  <input id="q" class="search" type="search">
+  <select id="lang" class="ghost"><option value="az">AZ</option><option value="ru">RU</option><option value="en">EN</option><option value="tr">TR</option><option value="de">DE</option></select>
+  <button class="ghost" id="cartBtn">🛒 <span id="cc">0</span></button>
+  <button class="btn" id="sellBtn"></button>
+</header>
+<section class="hero"><h1 id="h1"></h1><p id="sub"></p></section>
+<div class="bar" id="cats"></div>
+<div class="bar"><select id="cond"></select><select id="sort"></select></div>
+<main class="grid" id="grid"></main>
+<footer id="foot"></footer>
+
+<dialog id="dSell"><div class="f">
+  <h2 id="sT" style="margin:0"></h2>
+  <label id="lPh"></label><input type="file" id="files" accept="image/*" multiple><div class="thumbs" id="thumbs"></div>
+  <label id="lTi"></label><input id="fT">
+  <label id="lCa"></label><select id="fC"></select>
+  <label id="lCo"></label><select id="fK"></select>
+  <label id="lPr"></label><input id="fP" type="number" min="1" step="1">
+  <label id="lDe"></label><textarea id="fD" rows="3"></textarea>
+  <div class="row"><button class="btn sec" id="sX"></button><button class="btn" id="sOk"></button></div>
+</div></dialog>
+
+<dialog id="dItem"><div id="itemBody"></div></dialog>
+<dialog id="dCart"><h2 id="cT" style="margin:0 0 6px"></h2><div id="cBody"></div></dialog>
+
+<script>
+const L={
+az:{search:"Axtar: palto, krossovka, çanta…",sell:"+ Sat",h1:"İkinci əl. Birinci sinif.",sub:"Geyim və əşyalar — şəxsən satıcılardan, ucuz qiymətə.",all:"Hamısı",women:"Qadın",men:"Kişi",kids:"Uşaq",shoes:"Ayaqqabı",bags:"Çanta",other:"Əşyalar",anyc:"İstənilən vəziyyət",c1:"Yeni kimi",c2:"Əla",c3:"Yaxşı",new:"Ən yenilər",low:"Ucuzdan bahaya",high:"Bahadan ucuza",add:"Səbətə at",empty:"Heç nə tapılmadı",total:"Cəmi",buy:"Sifariş et",cart:"Səbət",thanks:"Sifariş qəbul edildi! (demo)",pT:"Elan yerləşdir",ph:"Şəkillər",ti:"Başlıq",ca:"Kateqoriya",co:"Vəziyyət",pr:"Qiymət (₼)",de:"Təsvir",pub:"Yayımla",x:"Bağla",foot:"© Təkrar — ikinci əl marketplace"},
+ru:{search:"Поиск: пальто, кроссовки, сумка…",sell:"+ Продать",h1:"Секондхенд. Первый сорт.",sub:"Одежда и вещи от реальных людей — по честной цене.",all:"Все",women:"Женщинам",men:"Мужчинам",kids:"Детям",shoes:"Обувь",bags:"Сумки",other:"Вещи",anyc:"Любое состояние",c1:"Как новое",c2:"Отличное",c3:"Хорошее",new:"Сначала новые",low:"Дешевле",high:"Дороже",add:"В корзину",empty:"Ничего не найдено",total:"Итого",buy:"Оформить заказ",cart:"Корзина",thanks:"Заказ принят! (демо)",pT:"Разместить объявление",ph:"Фотографии",ti:"Название",ca:"Категория",co:"Состояние",pr:"Цена (₼)",de:"Описание",pub:"Опубликовать",x:"Закрыть",foot:"© Təkrar — маркетплейс б/у вещей"},
+en:{search:"Search: coat, sneakers, bag…",sell:"+ Sell",h1:"Pre-loved. First class.",sub:"Clothes and things from real people — at fair prices.",all:"All",women:"Women",men:"Men",kids:"Kids",shoes:"Shoes",bags:"Bags",other:"Items",anyc:"Any condition",c1:"Like new",c2:"Excellent",c3:"Good",new:"Newest",low:"Price: low to high",high:"Price: high to low",add:"Add to cart",empty:"Nothing found",total:"Total",buy:"Checkout",cart:"Cart",thanks:"Order placed! (demo)",pT:"Post a listing",ph:"Photos",ti:"Title",ca:"Category",co:"Condition",pr:"Price (₼)",de:"Description",pub:"Publish",x:"Close",foot:"© Təkrar — second-hand marketplace"},
+tr:{search:"Ara: palto, spor ayakkabı, çanta…",sell:"+ Sat",h1:"İkinci el. Birinci sınıf.",sub:"Gerçek insanlardan giyim ve eşyalar — adil fiyatlarla.",all:"Tümü",women:"Kadın",men:"Erkek",kids:"Çocuk",shoes:"Ayakkabı",bags:"Çanta",other:"Eşyalar",anyc:"Tüm durumlar",c1:"Sıfır gibi",c2:"Mükemmel",c3:"İyi",new:"En yeni",low:"Fiyat: düşükten yükseğe",high:"Fiyat: yüksekten düşüğe",add:"Sepete ekle",empty:"Hiçbir şey bulunamadı",total:"Toplam",buy:"Siparişi tamamla",cart:"Sepet",thanks:"Sipariş alındı! (demo)",pT:"İlan ver",ph:"Fotoğraflar",ti:"Başlık",ca:"Kategori",co:"Durum",pr:"Fiyat (₼)",de:"Açıklama",pub:"Yayınla",x:"Kapat",foot:"© Təkrar — ikinci el pazaryeri"},
+de:{search:"Suche: Mantel, Sneaker, Tasche…",sell:"+ Verkaufen",h1:"Second Hand. Erste Wahl.",sub:"Kleidung und Dinge von echten Menschen — zu fairen Preisen.",all:"Alle",women:"Damen",men:"Herren",kids:"Kinder",shoes:"Schuhe",bags:"Taschen",other:"Sonstiges",anyc:"Jeder Zustand",c1:"Wie neu",c2:"Sehr gut",c3:"Gut",new:"Neueste zuerst",low:"Preis aufsteigend",high:"Preis absteigend",add:"In den Warenkorb",empty:"Nichts gefunden",total:"Gesamt",buy:"Zur Kasse",cart:"Warenkorb",thanks:"Bestellung aufgegeben! (Demo)",pT:"Anzeige aufgeben",ph:"Fotos",ti:"Titel",ca:"Kategorie",co:"Zustand",pr:"Preis (₼)",de:"Beschreibung",pub:"Veröffentlichen",x:"Schließen",foot:"© Təkrar — Second-Hand-Marktplatz"}};
+const seed=[
+{id:1,c:"women",e:"🧥",bg:"#E8D5B7",p:65,k:1,t:{az:"Yun palto, M",ru:"Шерстяное пальто, M",en:"Wool coat, M"}},
+{id:2,c:"shoes",e:"👟",bg:"#CFE3DA",p:48,k:2,t:{az:"Nike krossovka, 42",ru:"Кроссовки Nike, 42",en:"Nike sneakers, 42"}},
+{id:3,c:"men",e:"👔",bg:"#D6DEEB",p:22,k:1,t:{az:"Ağ köynək, L",ru:"Белая рубашка, L",en:"White shirt, L"}},
+{id:4,c:"bags",e:"👜",bg:"#F3C9B8",p:80,k:2,t:{az:"Dəri çanta",ru:"Кожаная сумка",en:"Leather handbag"}},
+{id:5,c:"kids",e:"🧸",bg:"#F6E3A6",p:15,k:3,t:{az:"Uşaq gödəkçəsi, 6 yaş",ru:"Детская куртка, 6 лет",en:"Kids jacket, age 6"}},
+{id:6,c:"women",e:"👗",bg:"#E4C9E8",p:35,k:2,t:{az:"Yay donu, S",ru:"Летнее платье, S",en:"Summer dress, S"}},
+{id:7,c:"men",e:"👖",bg:"#BFD0E0",p:30,k:3,t:{az:"Levi's cins, 32",ru:"Джинсы Levi's, 32",en:"Levi's jeans, 32"}},
+{id:8,c:"other",e:"⌚",bg:"#DADADA",p:55,k:2,t:{az:"Qol saatı",ru:"Наручные часы",en:"Wristwatch"}}];
+const X={1:["Yünlü palto, M","Wollmantel, M"],2:["Nike spor ayakkabı, 42","Nike-Sneaker, 42"],3:["Beyaz gömlek, L","Weißes Hemd, L"],4:["Deri çanta","Ledertasche"],5:["Çocuk montu, 6 yaş","Kinderjacke, 6 Jahre"],6:["Yazlık elbise, S","Sommerkleid, S"],7:["Levi's kot, 32","Levi's-Jeans, 32"],8:["Kol saati","Armbanduhr"]};
+seed.forEach(p=>{p.t.tr=X[p.id][0];p.t.de=X[p.id][1]});
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}}};
+let lang=store.get("tk_lang","az"),cat="all",mine=store.get("tk_mine",[]),cart=store.get("tk_cart",[]),fav=store.get("tk_fav",[]),pics=[];
+const $=id=>document.getElementById(id),T=k=>L[lang][k];
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const all=()=>[...mine,...seed];
+const name=p=>p.t?p.t[lang]||p.t.en:esc(p.n);
+const pic=p=>p.img?`<div class="ph"><img src="${p.img}" alt=""></div>`:`<div class="ph" style="background:${p.bg||"#DDD"}">${p.e||"📦"}</div>`;
+const cats=["all","women","men","kids","shoes","bags","other"];
+function ui(){
+ document.documentElement.lang=lang;$("lang").value=lang;$("q").placeholder=T("search");$("sellBtn").textContent=T("sell");
+ $("h1").textContent=T("h1");$("sub").textContent=T("sub");$("foot").textContent=T("foot");
+ $("cats").innerHTML=cats.map(c=>`<button class="chip ${c==cat?"on":""}" data-c="${c}">${T(c)}</button>`).join("");
+ const cv=$("cond").value||"0",sv=$("sort").value||"new";
+ $("cond").innerHTML=`<option value="0">${T("anyc")}</option>`+[1,2,3].map(i=>`<option value="${i}">${T("c"+i)}</option>`).join("");$("cond").value=cv;
+ $("sort").innerHTML=["new","low","high"].map(s=>`<option value="${s}">${T(s)}</option>`).join("");$("sort").value=sv;
+ $("sT").textContent=T("pT");$("lPh").textContent=T("ph");$("lTi").textContent=T("ti");$("lCa").textContent=T("ca");$("lCo").textContent=T("co");$("lPr").textContent=T("pr");$("lDe").textContent=T("de");
+ $("fC").innerHTML=cats.slice(1).map(c=>`<option value="${c}">${T(c)}</option>`).join("");
+ $("fK").innerHTML=[1,2,3].map(i=>`<option value="${i}">${T("c"+i)}</option>`).join("");
+ $("sOk").textContent=T("pub");$("sX").textContent=T("x");$("cT").textContent=T("cart");
+ $("cc").textContent=cart.length;draw();
+}
+function draw(){
+ const q=$("q").value.toLowerCase(),k=+$("cond").value,s=$("sort").value;
+ let a=all().filter(p=>(cat=="all"||p.c==cat)&&(!k||p.k==k)&&name(p).toLowerCase().includes(q));
+ if(s=="low")a.sort((x,y)=>x.p-y.p);if(s=="high")a.sort((x,y)=>y.p-x.p);
+ $("grid").innerHTML=a.length?a.map(p=>`<div class="card" data-id="${p.id}">${pic(p)}<span class="badge">${T("c"+p.k)}</span><button class="fav" data-f="${p.id}">${fav.includes(p.id)?"❤️":"🤍"}</button><div class="info"><h3>${name(p)}</h3><div class="price">${p.p} ₼</div></div></div>`).join(""):`<p>${T("empty")}</p>`;
+}
+function renderCart(){
+ const items=cart.map(id=>all().find(p=>p.id==id)).filter(Boolean),sum=items.reduce((t,p)=>t+p.p,0);
+ $("cBody").innerHTML=(items.length?items.map(p=>`<div class="ci">${pic(p)}<div>${name(p)}<br><b>${p.p} ₼</b></div><button class="chip" data-rm="${p.id}">✕</button></div>`).join("")+`<p><b>${T("total")}: ${sum} ₼</b></p><div class="row"><button class="btn sec" data-close>${T("x")}</button><button class="btn" id="buy">${T("buy")}</button></div>`:`<p>${T("empty")}</p><button class="btn" data-close>${T("x")}</button>`);
+}
+$("cats").onclick=e=>{const c=e.target.dataset.c;if(c){cat=c;ui()}};
+["q","cond","sort"].forEach(i=>$(i).oninput=draw);
+$("lang").onchange=e=>{lang=e.target.value;store.set("tk_lang",lang);ui()};
+$("grid").onclick=e=>{
+ const f=e.target.dataset.f;if(f){const n=+f;fav=fav.includes(n)?fav.filter(x=>x!=n):[...fav,n];store.set("tk_fav",fav);draw();return}
+ const c=e.target.closest(".card");if(!c)return;const p=all().find(x=>x.id==c.dataset.id);
+ $("itemBody").innerHTML=pic(p)+`<h2>${name(p)}</h2><p><span class="badge" style="position:static">${T("c"+p.k)}</span></p><p>${p.d?esc(p.d):""}</p><div class="price" style="font-size:24px">${p.p} ₼</div><div class="row"><button class="btn sec" data-close>${T("x")}</button><button class="btn" data-add="${p.id}">${T("add")}</button></div>`;
+ $("dItem").showModal();
+};
+document.addEventListener("click",e=>{
+ const d=e.target.dataset;
+ if(d.add){if(!cart.includes(+d.add))cart.push(+d.add);store.set("tk_cart",cart);$("cc").textContent=cart.length;$("dItem").close()}
+ if(d.rm){cart=cart.filter(x=>x!=d.rm);store.set("tk_cart",cart);renderCart();$("cc").textContent=cart.length}
+ if("close" in d){e.target.closest("dialog").close()}
+ if(e.target.id=="buy"){alert(T("thanks"));cart=[];store.set("tk_cart",cart);$("cc").textContent=0;$("dCart").close()}
+});
+$("cartBtn").onclick=()=>{renderCart();$("dCart").showModal()};
+$("sellBtn").onclick=()=>{pics=[];$("thumbs").innerHTML="";$("dSell").showModal()};
+$("sX").onclick=()=>$("dSell").close();
+$("files").onchange=e=>{
+ pics=[];$("thumbs").innerHTML="";
+ [...e.target.files].slice(0,4).forEach(f=>{const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{
+  const s=Math.min(1,500/Math.max(im.width,im.height)),cv=document.createElement("canvas");cv.width=im.width*s;cv.height=im.height*s;
+  cv.getContext("2d").drawImage(im,0,0,cv.width,cv.height);const u=cv.toDataURL("image/jpeg",.7);pics.push(u);$("thumbs").insertAdjacentHTML("beforeend",`<img src="${u}" alt="">`)};im.src=r.result};r.readAsDataURL(f)});
+};
+$("sOk").onclick=()=>{
+ const t=$("fT").value.trim(),p=+$("fP").value;if(!t||!p)return;
+ mine.unshift({id:Date.now(),c:$("fC").value,k:+$("fK").value,p,n:t,d:$("fD").value.trim(),img:pics[0]||""});
+ if(!store.set("tk_mine",mine)){mine[0].img="";store.set("tk_mine",mine)}
+ ["fT","fP","fD"].forEach(i=>$(i).value="");$("dSell").close();cat="all";ui();
+};
+ui();
+</script>
+</body>
+</html>
